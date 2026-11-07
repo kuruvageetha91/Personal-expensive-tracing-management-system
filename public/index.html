@@ -1,0 +1,223 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Geetha | Personal Expense Tracker</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+</head>
+<body>
+<
+<!-- GEETHA PROFILE -->
+<div class="welcome-profile">
+    <img src="/images/geetha.imge.jpg"
+         alt="Geetha Profile Photo"
+         class="profile-photo">
+
+    <h2>Welcome to Geetha Expense Tracker</h2>
+    <p>Manage Your Money Smartly</p>
+</div>
+
+<!-- LOGIN AND REGISTRATION -->
+<section id="authSection" class="auth-section">
+    <div class="auth-card">
+        <div class="brand-icon"><i class="fa-solid fa-wallet"></i></div>
+        <h1>Geetha Expense Tracker</h1>
+        <p>Manage your money. Achieve your goals.</p>
+
+        <div class="auth-tabs">
+            <button id="loginTab" class="active" onclick="showAuth('login')">Login</button>
+            <button id="registerTab" onclick="showAuth('register')">Register</button>
+        </div>
+
+        <form id="loginForm">
+            <input type="email" id="loginEmail" placeholder="Email address" required>
+            <input type="password" id="loginPassword" placeholder="Password" required>
+            <button class="primary-btn" type="submit">Login</button>
+        </form>
+
+        <form id="registerForm" class="hidden">
+            <input type="text" id="regName" placeholder="Full Name" required>
+            <input type="email" id="regEmail" placeholder="Email address" required>
+            <input type="password" id="regPassword" placeholder="Password (min 6 characters)" required minlength="6">
+            <button class="primary-btn" type="submit">Create Account</button>
+        </form>
+        <p id="authMessage" class="message"></p>
+    </div>
+</section>
+
+<!-- MAIN DASHBOARD -->
+<div id="appSection" class="hidden">
+
+    <aside class="sidebar">
+        <h2><i class="fa-solid fa-wallet"></i> Geetha</h2>
+        <p class="sidebar-subtitle">Expense Manager</p>
+
+        <nav>
+            <a href="#dashboard"><i class="fa-solid fa-house"></i> Dashboard</a>
+            <a href="#addTransaction"><i class="fa-solid fa-plus-circle"></i> Add Transaction</a>
+            <a href="#budgetSection"><i class="fa-solid fa-piggy-bank"></i> Monthly Budget</a>
+            <a href="#reportSection"><i class="fa-solid fa-chart-pie"></i> Reports</a>
+            <a href="#historySection"><i class="fa-solid fa-clock-rotate-left"></i> History</a>
+        </nav>
+
+        <button id="logoutBtn" class="logout-btn">
+            <i class="fa-solid fa-right-from-bracket"></i> Logout
+        </button>
+    </aside>
+
+    <main class="main-content">
+
+        <header class="topbar">
+            <div>
+                <h1>Dashboard</h1>
+                <p>Welcome back, <span id="userName">User</span>!</p>
+            </div>
+            <div class="date-display" id="todayDate"></div>
+        </header>
+
+        <!-- SUMMARY CARDS -->
+        <section id="dashboard" class="summary-grid">
+            <div class="summary-card income">
+                <div class="card-icon"><i class="fa-solid fa-arrow-trend-up"></i></div>
+                <p>Total Income</p>
+                <h2 id="totalIncome">₹0.00</h2>
+            </div>
+
+            <div class="summary-card expense">
+                <div class="card-icon"><i class="fa-solid fa-arrow-trend-down"></i></div>
+                <p>Total Expenses</p>
+                <h2 id="totalExpenses">₹0.00</h2>
+            </div>
+
+            <div class="summary-card balance">
+                <div class="card-icon"><i class="fa-solid fa-wallet"></i></div>
+                <p>Available Balance</p>
+                <h2 id="balance">₹0.00</h2>
+            </div>
+        </section>
+
+        <!-- TRANSACTION FORM -->
+        <section id="addTransaction" class="panel">
+            <h2><i class="fa-solid fa-circle-plus"></i> Add Transaction</h2>
+
+            <form id="transactionForm" class="form-grid">
+                <input type="hidden" id="transactionId">
+
+                <div class="form-group">
+                    <label>Transaction Type</label>
+                    <select id="transactionType" required>
+                        <option value="Expense">Expense</option>
+                        <option value="Income">Income</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Category</label>
+                    <select id="categoryId" required></select>
+                </div>
+
+                <div class="form-group">
+                    <label>Amount (₹)</label>
+                    <input type="number" id="amount" min="0.01" step="0.01" placeholder="Enter amount" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Date</label>
+                    <input type="date" id="transactionDate" required>
+                </div>
+
+                <div class="form-group full-width">
+                    <label>Description</label>
+                    <input type="text" id="description" placeholder="Enter transaction details">
+                </div>
+
+                <div class="form-group full-width">
+                    <button type="submit" class="primary-btn" id="saveTransaction">
+                        Add Transaction
+                    </button>
+                    <button type="button" class="cancel-btn hidden" id="cancelEdit" onclick="resetTransactionForm()">
+                        Cancel Edit
+                    </button>
+                </div>
+            </form>
+        </section>
+
+        <!-- CATEGORY MANAGEMENT -->
+        <section class="panel">
+            <h2><i class="fa-solid fa-layer-group"></i> Manage Categories</h2>
+            <form id="categoryForm" class="inline-form">
+                <input type="text" id="categoryName" placeholder="Category name" required>
+                <select id="newCategoryType">
+                    <option value="Expense">Expense</option>
+                    <option value="Income">Income</option>
+                </select>
+                <button class="primary-btn" type="submit">Add Category</button>
+            </form>
+            <div id="categoryList" class="category-list"></div>
+        </section>
+
+        <!-- BUDGET -->
+        <section id="budgetSection" class="panel">
+            <h2><i class="fa-solid fa-piggy-bank"></i> Monthly Budget</h2>
+            <form id="budgetForm" class="inline-form">
+                <input type="number" id="monthlyLimit" min="0.01" step="0.01" placeholder="Budget amount (₹)" required>
+                <select id="budgetMonth"></select>
+                <input type="number" id="budgetYear" min="2020" max="2100" required>
+                <button class="primary-btn" type="submit">Save Budget</button>
+            </form>
+            <div class="budget-info">
+                <p>Monthly Budget: <strong id="budgetAmount">₹0.00</strong></p>
+                <p>Amount Spent: <strong id="budgetSpent">₹0.00</strong></p>
+                <p>Remaining: <strong id="budgetRemaining">₹0.00</strong></p>
+                <div class="progress-track">
+                    <div id="budgetProgress" class="progress-fill"></div>
+                </div>
+                <p id="budgetMessage"></p>
+            </div>
+        </section>
+
+        <!-- REPORTS -->
+        <section id="reportSection" class="panel">
+            <h2><i class="fa-solid fa-chart-column"></i> Monthly Spending Report</h2>
+            <form id="reportForm" class="inline-form">
+                <select id="reportMonth"></select>
+                <input type="number" id="reportYear" min="2020" max="2100">
+                <button class="primary-btn" type="submit">View Report</button>
+            </form>
+            <div id="reportSummary" class="report-summary"></div>
+            <div id="reportChart" class="report-chart"></div>
+        </section>
+
+        <!-- TRANSACTION HISTORY -->
+        <section id="historySection" class="panel">
+            <h2><i class="fa-solid fa-clock-rotate-left"></i> Transaction History</h2>
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Category</th>
+                            <th>Type</th>
+                            <th>Description</th>
+                            <th>Amount</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="transactionTable">
+                        <tr><td colspan="6">No transactions yet.</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <footer>© 2026 Geetha | Personal Expenses Tracker Management System</footer>
+    </main>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
